@@ -1,0 +1,15 @@
+- hosts: local
+  roles:
+  - role: provisioning
+    tags: provisioning
+
+- hosts: all
+  become: yes
+  user: ubuntu
+  gather_facts: no
+  pre_tasks:
+  - name: Atualizando repositório e instalando o Python
+    raw: apt update && apt install -y python
+  roles:
+  - role: install-k8s
+    tags: install-k8s
