@@ -3,13 +3,26 @@
   - role: provisioning
     tags: provisioning
 
-- hosts: all
+- hosts: k8s_master,k8s_workers
   become: yes
   user: ubuntu
-  gather_facts: no
   pre_tasks:
   - name: Atualizando repositório e instalando o Python
     raw: apt update && apt install -y python
   roles:
   - role: install-k8s
     tags: install-k8s
+
+- hosts: k8s_master
+  become: yes
+  user: ubuntu
+  roles:
+  - role: create-cluster
+    tags: create-cluster
+
+- hosts: k8s_workers
+  become: yes
+  user: ubuntu
+  roles:
+  - role: join-workers
+    tags: join-workers

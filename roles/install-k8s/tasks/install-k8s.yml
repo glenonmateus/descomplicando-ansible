@@ -1,0 +1,66 @@
+- name: Populando o serviços
+  service_facts:
+
+- name: Removendo swapfile do fstab
+  mount:
+    name: '{{ item }}'
+    fstype: swap
+    state: absent
+  loop:
+    - swap
+    - none
+
+- name: Desativando o swap
+  command: swapoff -a
+  when: ansible_swaptotal_mb > 0
+
+- name: Instalando pacotes necessários
+  apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+    install_recommends: no
+  loop:
+  - apt-transport-https
+  - bash-completion
+
+- name: Baixando script de instalação do Docker
+  get_url:
+    url: https://get.docker.com
+    dest: /opt/get-docker.sh
+    mode: 0755
+  when: ansible_facts.services['docker'] is not defined
+
+- name: Executando o script de instalação do Docker
+  shell: bash /opt/get-docker.sh
+  when: ansible_facts.services['docker'] is not defined
+
+- name: Adicionando as chaves do repo apt do k8s
+  apt_key:
+    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    state: present
+
+- name: Adicionando o repo do k8s
+  apt_repository:
+    repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+    state: present
+
+- name: Instalando os pacotes kubeadm, kubelet e kubectl
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    state: latest
+  loop:
+  - kubelet
+  - kubeadm
+  - kubectl
+
+- name: Configurando bash-completion kubectl
+  shell: kubectl completion bash > /etc/bash_completion.d/kubectl
+  args:
+    creates: /etc/bash_completion.d/kubectl
+
+- name: Configurando bash-completion kubeadm
+  shell: kubeadm completion bash > /etc/bash_completion.d/kubeadm
+  args:
+    creates: /etc/bash_completion.d/kubeadm
