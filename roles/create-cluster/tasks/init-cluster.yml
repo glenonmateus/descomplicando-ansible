@@ -1,0 +1,38 @@
+- name: Reiniciando o cluster
+  command: kubeadm reset -f
+
+- name: Removendo as configurações antigas do master
+  file:
+    path: $HOME/.kube/
+    state: absent
+
+- name: Baixando as imagens do k8s
+  command: kubeadm config images pull
+
+- name: Iniciando o kubeadm
+  command: kubeadm init
+  args:
+    creates: /var/lib/kubelet/config.yaml
+
+- name: Criando o diretório .kube
+  file:
+    path: $HOME/.kube
+    state: directory
+
+- name: Linkando a configuração
+  file:
+    src: /etc/kubernetes/admin.conf
+    dest: $HOME/.kube/config
+    state: link
+
+- name: Pegando a versão do k8s
+  shell: kubectl version | base64 | tr -d '\n'
+  register: kubectl_version
+
+- name: Deploying o weave net
+  command: kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version={{ kubectl_version.stdout }}"
+
+- name: Salvando o kubeadm join token
+  command: kubeadm token create --print-join-command
+  register: kubeadm_join_token
+  delegate_to: "{{ groups['k8s_master'][0] }}"

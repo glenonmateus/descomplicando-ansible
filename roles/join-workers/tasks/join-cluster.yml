@@ -1,0 +1,5 @@
+- name: Removendo configurações antigas dos nodes workers
+  command: kubeadm reset -f
+
+- name: Adicionando os workers ao cluster
+  shell: "{{ hostvars[groups['k8s_master'][0]]['kubeadm_join_token']['stdout'] }}"
