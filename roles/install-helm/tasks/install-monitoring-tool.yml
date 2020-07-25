@@ -23,3 +23,4 @@
         location: "{{ url_repo_helm }}"
         path: stable/prometheus-operator
     state: present
+    name: prometheus-operator

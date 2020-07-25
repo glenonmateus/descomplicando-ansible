@@ -1,5 +1,13 @@
 - name: Removendo configurações antigas dos nodes workers
   command: kubeadm reset -f
+  when: inventory_hostname in groups['k8s_workers']
+
+- name: Pegando o kubeadm join token
+  command: kubeadm token create --print-join-command
+  delegate_to: "{{ groups['k8s_master'][0] }}"
+  when: inventory_hostname in groups['k8s_master']
+  register: kubeadm_join_token
 
 - name: Adicionando os workers ao cluster
   shell: "{{ hostvars[groups['k8s_master'][0]]['kubeadm_join_token']['stdout'] }}"
+  when: inventory_hostname in groups['k8s_workers']

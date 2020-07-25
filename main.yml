@@ -20,12 +20,19 @@
   - role: create-cluster
     tags: create-cluster
 
-- hosts: k8s_workers
+- hosts: k8s_master,k8s_workers
   become: yes
   user: ubuntu
   roles:
   - role: join-workers
     tags: join-workers
+
+- hosts: k8s_master
+  become: yes
+  user: ubuntu
+  roles:
+  - role: install-helm
+    tags: install-helm
 
 - hosts: k8s_master
   become: yes

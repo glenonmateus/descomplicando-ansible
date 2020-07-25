@@ -1,0 +1,5 @@
+---
+# tasks file for install-helm
+- include: install-helm.yml
+
+- include: install-monitoring-tool.yml
