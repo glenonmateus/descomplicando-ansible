@@ -1,0 +1,13 @@
+- name: Download helm
+  get_url:
+    url: "{{ helm_url }}"
+    dest: /tmp/get_helm.sh
+    mode: 755
+  ignore_errors: true
+  register: download
+
+- name: Instalando o Helm
+  shell:
+    /tmp/get_helm.sh
+  when:
+  - download.failed|bool == false

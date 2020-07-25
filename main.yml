@@ -26,3 +26,10 @@
   roles:
   - role: join-workers
     tags: join-workers
+
+- hosts: k8s_master
+  become: yes
+  user: ubuntu
+  roles:
+  - role: deploy-app
+    tags: deploy-app

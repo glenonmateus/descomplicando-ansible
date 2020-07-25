@@ -27,12 +27,12 @@
 - name: Baixando script de instalação do Docker
   get_url:
     url: https://get.docker.com
-    dest: /opt/get-docker.sh
+    dest: /tmp/get-docker.sh
     mode: 0755
   when: ansible_facts.services['docker'] is not defined
 
 - name: Executando o script de instalação do Docker
-  shell: bash /opt/get-docker.sh
+  shell: bash /tmp/get-docker.sh
   when: ansible_facts.services['docker'] is not defined
 
 - name: Adicionando as chaves do repo apt do k8s

@@ -1,0 +1,25 @@
+- name: Instalando pacotes necessários usar o gerenciador de pacotes pip
+  apt:
+    name: "{{ item }}"
+    state: latest
+  loop:
+  - python3-virtualenv
+  - python3-setuptools
+  - python3-pip 
+
+- name: Instalando pacotes necessários para usar o módulo Helm
+  pip:
+    name: "{{ item }}"
+    state: latest
+  loop:
+  - pyhelm
+  - grpcio
+
+- name: Instalando Prometheus Operator
+  helm:
+    chart:
+      source:
+        type: repo
+        location: "{{ url_repo_helm }}"
+        path: stable/prometheus-operator
+    state: present
