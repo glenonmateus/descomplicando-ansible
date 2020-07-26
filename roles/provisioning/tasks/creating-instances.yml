@@ -126,13 +126,15 @@
   loop: "{{ ec2.instances }}"
   when: item.ami_launch_index|int > 0
 
+- name: Atualizando o arquivo de inventário
+  meta: refresh_inventory
+
 - name: Esperando o SSH
   local_action:
     module: wait_for
     host: "{{ item.public_ip }}"
     port: 22
     state: started
-    delay: 10
   loop: "{{ ec2.instances }}" 
 
 - name: Adicionando uma tag nas instancias

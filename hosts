@@ -2,12 +2,12 @@
 localhost ansible_connection=local ansible_python_interpreter=python gather_facts=false
 
 [k8s_master]
-15.228.12.176
+18.231.4.187
 
 [k8s_workers]
-54.232.203.155
-18.228.19.151
+18.230.152.222
+54.94.22.74
 
 [k8s_workers:vars]
-K8S_MASTER_NODE_IP=172.31.22.18
+K8S_MASTER_NODE_IP=172.31.18.213
 K8S_API_SECURE_PORT=6443

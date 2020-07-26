@@ -7,8 +7,8 @@
     fstype: swap
     state: absent
   loop:
-    - swap
-    - none
+  - swap
+  - none
 
 - name: Desativando o swap
   command: swapoff -a
@@ -37,12 +37,12 @@
 
 - name: Adicionando as chaves do repo apt do k8s
   apt_key:
-    url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+    url: "{{ url_k8s_apt_key }}" 
     state: present
 
 - name: Adicionando o repo do k8s
   apt_repository:
-    repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+    repo: "{{ url_k8s_repo }}" 
     state: present
 
 - name: Instalando os pacotes kubeadm, kubelet e kubectl
